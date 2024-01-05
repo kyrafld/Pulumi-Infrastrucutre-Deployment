@@ -2,48 +2,71 @@
 const pulumi = require("@pulumi/pulumi");
 const aws = require("@pulumi/aws");
 
-// Create an AWS resource (S3 Bucket)
 const bucket = new aws.s3.Bucket("my-bucket");
 
 const vpc = new aws.ec2.Vpc("awsome-architechs", {
-    cidrBlock: "10.0.0.0/16", 
-    enableDnsSupport: true,
-    enableDnsHostnames: true,
-    tags: {
-        Name: "awsome-architechs",
-    },
+  cidrBlock: "10.0.0.0/16",
+  enableDnsSupport: true,
+  enableDnsHostnames: true,
+  tags: {
+    Name: "awsome-architechs",
+  },
 });
 
-// Export the VPC ID
+const publicCidrBlocks = ["10.0.2.0/24", "10.0.4.0/24", "10.0.6.0/24"]
+const privateCidrBlocks = ["10.0.1.0/24", "10.0.3.0/24", "10.0.5.0/24"]
+const azs = pulumi.output(aws.getAvailabilityZones({}));
+
+const publicSubnets = publicCidrBlocks.map((cidrBlock, index) => {
+  return new aws.ec2.Subnet(`public-subnet-${index + 1}`, {
+    vpcId: vpc.id,
+    cidrBlock,
+    availabilityZone: azs.names[index],
+    mapPublicIpOnLaunch: true,
+    tags: {
+      Name: `public-subnet-${index}`
+    }
+  });
+});
+
+const privateSubnets = privateCidrBlocks.map((cidrBlock, index) => {
+  return new aws.ec2.Subnet(`private-subnet-${index + 1}`, {
+    vpcId: vpc.id,
+    cidrBlock,
+    availabilityZone: azs.names[index],
+    mapPublicIpOnLaunch: false,
+    tags: {
+      Name: `private-subnet-${index}`
+    }
+  });
+});
+
+const internetGateway = new aws.ec2.InternetGateway('my-internet-gateway', {
+  vpcId: vpc.id,
+});
+
+const routeTable = new aws.ec2.RouteTable('awsome-architechs', { vpcId: vpc.id,
+});
+
+const route = new aws.ec2.Route('my-route', {
+  routeTableId: routeTable.id,
+  destinationCidrBlock: '0.0.0.0/0',
+  gatewayId: internetGateway.id,
+})
+
+const routeTableAssociation = publicSubnets.map((publicSubnetsId , index) => {
+  return new aws.ec2.RouteTableAssociation(`awsome-architechs-${index}`, {
+  subnetId: publicSubnetsId, 
+  routeTableId: routeTable.id,
+});
+})
+
 exports.vpcId = vpc.id;
-
-// Export the name of the bucket
+exports.privateSubnetsIds = privateSubnets.map(privateSubnets => privateSubnets.id)
+exports.publicSubnetsIds= publicSubnets.map(publicSubnets => publicSubnets.id);
 exports.bucketName = bucket.id;
+exports.internetGatewayId = internetGateway.id;
+exports.routeTableId = routeTable.id;
+exports.routeTableAssociationId = routeTableAssociation.map(assoc => assoc.id)
 
-// const pulumi = require("@pulumi/pulumi");
-// const aws = require("@pulumi/aws");
 
-// // Create an EC2 instance
-// const server = new aws.ec2.Instance("web-server", {
-//     // The AMI to use for the instance. This should be replaced with a valid AMI ID.
-//     ami: "ami-0c55b159cbfafe1f0",
-//     // The instance type, for example: 't2.micro'
-//     instanceType: "t2.micro",
-//     // The subnet ID to launch the instance in. Ensure this is in your selected VPC.
-//     subnetId: "subnet-0123456789abcdef",
-//     // Security groups the instance will belong to - replace with your actual security group IDs.
-//     vpcSecurityGroupIds: ["sg-0123456789abcdef"],
-//     // Optionally, you can specify the key name for SSH access.
-//     keyName: "my-key-pair",
-    
-//     // Additional optional fields could include:
-//     // userData: "#!/bin/bash\necho 'Hello, World!' > index.html", // User data script to run on instance start
-//     // associatePublicIpAddress: true, // Whether to associate a public IP address with an instance in a VPC
-//     // tags: {                          // Tags to add to the instance
-//     //     Name: "web-server-instance",
-//     // },
-// });
-
-// // Export the public IP of the instance
-// exports.publicIp = server.publicIp;
-// exports.publicHostName = server.publicDns;
