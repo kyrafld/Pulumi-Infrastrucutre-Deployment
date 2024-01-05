@@ -1,0 +1,6 @@
+name: awsome_architechs
+runtime:
+  name: nodejs
+  options:
+    typescript: false
+description: o get the applications and supporting services deployed to AWS cloud.
