@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-deployment
+  template:
+    metadata:
+      labels:
+        app: frontend-deployment
+    spec:
+      containers:
+      - name: awsome-architechs
+        image: public.ecr.aws/m6p2m6g2/frontend:20
+        ports:
+        - containerPort: 80
+        # env:
+        # - name: VITE_API_BASE_URL
+        #   value: http://a2023f815605d45e49ebe942f7160bf2-1117121887.eu-west-2.elb.amazonaws.com:8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend-deployment
+  ports:
+    - protocol: TCP
+      port: 3008
+      targetPort: 80
+  type: LoadBalancer

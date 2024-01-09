@@ -155,8 +155,16 @@ const launchConfig = new aws.ec2.LaunchConfiguration("launchConfig", {
 });
 
 //databases
-
-
+const dbInstance = new aws.rds.Instance("my-db-instance", {
+    allocatedStorage: 10,
+    engine: "postgres",
+    engineVersion: "15.4",
+    instanceClass: "db.t3.micro",
+    dbName: "awsome_db",
+    username: "postgres",
+    password: "cloud123",
+    skipFinalSnapshot: true,
+});
 
 exports.vpcId = vpc.id;
 exports.privateSubnetsIds = privateSubnets.map(
@@ -174,5 +182,7 @@ exports.routeTableAssociationId = routeTableAssociation.map(
 exports.httpSecurityGroupId = sgHttp.id;
 exports.httpsSecurityGroupId = sgHttps.id;
 exports.egressSecurityGroupId = sgEgress.id;
+exports.dbInstanceAddress = dbInstance.address;
+exports.dbInstancePort = dbInstance.port;
 // exports.kubeconfig = cluster.kubeconfig;
 // exports.clusterName = cluster.eksCluster.name;
