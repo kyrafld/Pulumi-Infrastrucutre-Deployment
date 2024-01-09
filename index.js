@@ -27,7 +27,7 @@ const publicSubnets = publicCidrBlocks.map((cidrBlock, index) => {
     availabilityZone: azs.names[index],
     mapPublicIpOnLaunch: true,
     tags: {
-      Name: `public-subnet-${index}`,
+      Name: `public-subnet-${index + 1}`,
     },
   });
 });
@@ -66,7 +66,6 @@ const routeTableAssociation = publicSubnets.map((publicSubnetsId, index) => {
 });
 
 //Security Groups
-
 const sgHttp = new aws.ec2.SecurityGroup("allowHttp", {
   name: "allow_http",
   description: "Allow HTTP inbound traffic",
@@ -97,7 +96,7 @@ const sgHttps = new aws.ec2.SecurityGroup("allowHttps", {
     },
   ],
   tags: {
-    Name: "HTTPS",
+    Name: "https",
   },
 });
 
@@ -118,76 +117,46 @@ const sgEgress = new aws.ec2.SecurityGroup("allowEgress", {
   },
 });
 
-const allowPort3000 = new aws.ec2.SecurityGroupRule("allow3000", {
-  type: "ingress",
-  fromPort: 3000,
-  toPort: 3000,
-  protocol: "tcp",
-  cidrBlocks: ["0.0.0.0/0"],
-  securityGroupId: sgHttp.id,
-});
+const allowPort3000 = new aws.ec2.SecurityGroupRule(
+  "allow3000",
+  {
+    type: "ingress",
+    fromPort: 3000,
+    toPort: 3000,
+    protocol: "tcp",
+    cidrBlocks: ["0.0.0.0/0"],
+    securityGroupId: sgHttp.id,
+  },
+  { dependsOn: [sgHttp] }
+);
 
-const allowHttp = new aws.ec2.SecurityGroupRule("allowHttp", {
-  type: "ingress",
-  fromPort: 80,
-  toPort: 80,
-  protocol: "tcp",
-  cidrBlocks: ["0.0.0.0/0"],
-  securityGroupId: sgHttp.id,
-});
 
-const allowHttps = new aws.ec2.SecurityGroupRule("allowHttps", {
-  type: "ingress",
-  fromPort: 443,
-  toPort: 443,
-  protocol: "tcp",
-  cidrBlocks: ["0.0.0.0/0"],
-  securityGroupId: sgHttps.id,
-});
-
-const allowEgress = new aws.ec2.SecurityGroupRule("allowEgress", {
-  type: "ingress",
-  fromPort: 0,
-  toPort: 0,
-  protocol: "-1",
-  cidrBlocks: ["0.0.0.0/0"],
-  securityGroupId: sgEgress.id,
-});
 //IAM roll with the correct policies attached
 const iamRoleArn = "arn:aws:iam::401404824186:role/Eks_manager";
 
-// const nodeGroupRole = new aws.iam.Role("node-group-role", {
-//   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-//       Service: "ec2.amazonaws.com",
-//   }),
-// });
-
 //eks cluster
 const eksCluster = new aws.eks.Cluster("awsome-architechs-cluster", {
-  vpcId: vpc.id,
-  publicSubnetsId: vpc.publicSubnetsId,
   instanceType: "t2.medium",
   desiredCapacity: 2,
   minSize: 1,
   maxSize: 3,
   deployDashboard: false,
   roleArn: iamRoleArn,
+  vpcConfig: {
+    subnetIds: publicSubnets.map((publicSubnets) => publicSubnets.id),
+    securityGroupIds: [sgHttp.id, sgHttp.id, sgEgress.id],
+  },
 });
-
-// privateCidrBlocks.map((cidrBlock, index) => {
-//   return new aws.ec2.Subnet(`private-subnet-${index + 1}`, {
-//     vpcId: vpc.id,
 
 const launchConfig = new aws.ec2.LaunchConfiguration("launchConfig", {
   instanceType: "t2.micro",
   securityGroups: [sgEgress.id, sgHttps.id, sgHttp.id],
   imageId: "ami-0e5f882be1900e43b",
-  instanceProfile: profile.arn,
 });
 
 //databases
-//loadbalancer?
-//autoscaler??
+
+
 
 exports.vpcId = vpc.id;
 exports.privateSubnetsIds = privateSubnets.map(
@@ -205,5 +174,5 @@ exports.routeTableAssociationId = routeTableAssociation.map(
 exports.httpSecurityGroupId = sgHttp.id;
 exports.httpsSecurityGroupId = sgHttps.id;
 exports.egressSecurityGroupId = sgEgress.id;
-exports.kubeconfig = cluster.kubeconfig;
-exports.clusterName = cluster.eksCluster.name;
+// exports.kubeconfig = cluster.kubeconfig;
+// exports.clusterName = cluster.eksCluster.name;
