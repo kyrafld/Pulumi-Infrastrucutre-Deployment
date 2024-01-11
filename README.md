@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="./Add a heading (4).png" alt="Markdownify" width="200"></a>
+ <img src="./Add a heading (4).png" alt="Markdownify" width="200"></a>
 
 </h1>
 
