@@ -111,8 +111,4 @@ In the build-image-and-push job the repo and public registry alias need to be ch
 Utilizing ArgoCD, automate synchronization with your project repository based on commits. Set up your application in the ArgoCD dashboard, specifying deployment file paths, target cluster, and namespace for automatic syncing and deployment.
 <br> See the [Usage](https://github.com/AnamariaGM/ce-team-project) for information on how to deploy using ArgoCD.
 
-**Deploying Backend and Frontend with ArgoCD**
-
-This guide will walk you through deploying the backend, frontend, and monitoring applications on your AWS EKS cluster using Helm charts and ArgoCD. ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes. Follow these instructions to set up [ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/) in your cluster. 
-
-
+## Customisation
