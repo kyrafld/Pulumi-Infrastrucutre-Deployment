@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="./media/images/app_screenshot.png" alt="Markdownify" width=""></a>
+  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="./Add a heading (4).png" alt="Markdownify" width="200"></a>
 
 </h1>
 
@@ -43,9 +43,9 @@
 
 <p align="center">
   <a href="#Overview">Overview</a> •
-  <a href="#Prerequisotes#">Prerequisties</a> •
+  <a href="#Prerequisite#">Prerequisite</a> •
   <a href="#Infrastructure#">Infrastructure</a> •
-  <a href="#components-deploymen#">Components Deployment</a> •
+  <a href="#Components-deploymen#">Components Deployment</a> •
   <a href="#Usage#">Usage</a> •
   <a href="#Customisation#">Customisation</a>
 </p>
@@ -102,42 +102,14 @@ The resources needed to create the EC2:
 Prometheus/Grafana
 
 ### Continuous Integration
+The [frontend](https://github.com/AnamariaGM/ce-team-project) repo are all setup for usage with CircleCI and will build and push an image to AWS-ECR.
+In the build-image-and-push job the repo and public registry alias need to be changed in order to push to your own ECR repo.
+<br> See the [Usage](https://github.com/AnamariaGM/ce-team-project) for infromation on how to intergrate using Circle CI. 
 
-The continuous integration (CI) setup utilizes CircleCI for both the [frontend](https://github.com/ggrady00/ce-team-project-frontend) and [backend](https://github.com/ggrady00/ce-team-project-backend) repositories. The CI process includes building and pushing Docker images to AWS-ECR.
-Frontend CI Configuration:
-Environment Variable:
-In the .env file, set the VITE_API_BASE_URL to the Backend Loadbalancer DNS.
-makefile
-Copy code
-VITE_API_BASE_URL = backend-endpoint:8080
-#### **Frontend CI configuration:**
-***Enviroment Variable:***
-<br> In the **'.env file'**, set the **'VITE_API_BASE_URL'** to the Backend Loadbalancer DNS.
-```
-VITE_API_BASE_URL = backend-endpoint:8080
-```
 
-In the db/migration/application.yml file:
-Configure the YAML file to migrate the backend database to an RDS Postgres instance.
-Update the datasource URL with your own RDS endpoint, port, and database name.
-
-#### **Backend CI configuration:**
-***Database Migration Configuration:***
-In the db/migration/application.yml file:
-- Configure the YAML file to migrate the backend database to an RDS Postgres instance.
-- Update the datasource URL with your own RDS endpoint, port, and database name.
- 
- ```bash 
- datasource:
-  url: jdbc:postgresql://your-rds-endpoint:your-port/your-database-name
- ```
-> **Note**
-<br> In the CircleCI job named build-image-and-push, ensure to modify the repository and public registry alias to match your ECR repository. This ensures that the Docker images are pushed to your specific ECR repository.
-
-These configurations should be adapted to match your specific environment and requirements.
 ### Continuous Deployment
-
 Utilizing ArgoCD, automate synchronization with your project repository based on commits. Set up your application in the ArgoCD dashboard, specifying deployment file paths, target cluster, and namespace for automatic syncing and deployment.
+<br> See the [Usage](https://github.com/AnamariaGM/ce-team-project) for information on how to deploy using ArgoCD.
 
 **Deploying Backend and Frontend with ArgoCD**
 

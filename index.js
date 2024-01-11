@@ -130,11 +130,10 @@ const allowPort3000 = new aws.ec2.SecurityGroupRule(
   { dependsOn: [sgHttp] }
 );
 
-
 //IAM roll with the correct policies attached
 const iamRoleArn = "arn:aws:iam::401404824186:role/Eks_manager";
 
-//eks cluster
+//EKS cluster
 const eksCluster = new aws.eks.Cluster("awsome-architechs-cluster", {
   instanceType: "t2.medium",
   desiredCapacity: 2,
@@ -154,16 +153,16 @@ const launchConfig = new aws.ec2.LaunchConfiguration("launchConfig", {
   imageId: "ami-0e5f882be1900e43b",
 });
 
-//databases
+//Databases
 const dbInstance = new aws.rds.Instance("my-db-instance", {
-    allocatedStorage: 10,
-    engine: "postgres",
-    engineVersion: "15.4",
-    instanceClass: "db.t3.micro",
-    dbName: "awsome_db",
-    username: "postgres",
-    password: "cloud123",
-    skipFinalSnapshot: true,
+  allocatedStorage: 10,
+  engine: "postgres",
+  engineVersion: "15.4",
+  instanceClass: "db.t3.micro",
+  dbName: "awsome_db",
+  username: "postgres",
+  password: "cloud123",
+  skipFinalSnapshot: true,
 });
 
 exports.vpcId = vpc.id;
@@ -184,5 +183,4 @@ exports.httpsSecurityGroupId = sgHttps.id;
 exports.egressSecurityGroupId = sgEgress.id;
 exports.dbInstanceAddress = dbInstance.address;
 exports.dbInstancePort = dbInstance.port;
-// exports.kubeconfig = cluster.kubeconfig;
-// exports.clusterName = cluster.eksCluster.name;
+
