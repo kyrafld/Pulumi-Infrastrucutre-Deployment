@@ -4,7 +4,10 @@
 
 </h1>
 
-# Infrastruce Deployment with CI/CD - Pulumi
+<h1 align="center">
+Infrastructure Deployment with CI/CD - Pulumi
+</h1>
+
 ### by AWSome Architechs 
 
 <p align="center">
@@ -41,15 +44,15 @@
 
 </p>
 
-<p align="center">
-  <a href="#Overview">Overview</a> •
-  <a href="#Prerequisite#">Prerequisite</a> •
-  <a href="#Infrastructure#">Infrastructure</a> •
-  <a href="#Components-deploymen#">Components Deployment</a> •
-  <a href="#Usage#">Usage</a> •
-  <a href="#Customisation#">Customisation</a>
-</p>
 
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="#prerequisites">Prerequistes</a> •
+  <a href="#infrastructure">Infrastructure</a> •
+    <a href="#components-deployed">Components Deployed</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#troubleshooting">Troubleshooting</a>
+</p>
 
 
 ## Overview
@@ -92,9 +95,7 @@ The resources needed to create the EC2:
 
 
 
-### Deployment 
-
-## Components Deployment
+## Components Deployed
 
 
 ## Usage
@@ -104,11 +105,15 @@ Prometheus/Grafana
 ### Continuous Integration
 The [frontend](https://github.com/AnamariaGM/ce-team-project) repo are all setup for usage with CircleCI and will build and push an image to AWS-ECR.
 In the build-image-and-push job the repo and public registry alias need to be changed in order to push to your own ECR repo.
-<br> See the [Usage](https://github.com/AnamariaGM/ce-team-project) for infromation on how to intergrate using Circle CI. 
+<br>
+<br> See the [**Usage**](https://github.com/AnamariaGM/ce-team-project?tab=readme-ov-file#usage) for infromation on how to intergrate using Circle CI. 
 
 
 ### Continuous Deployment
 Utilizing ArgoCD, automate synchronization with your project repository based on commits. Set up your application in the ArgoCD dashboard, specifying deployment file paths, target cluster, and namespace for automatic syncing and deployment.
-<br> See the [Usage](https://github.com/AnamariaGM/ce-team-project) for information on how to deploy using ArgoCD.
+<br>
+<br> See the [**Usage**](https://github.com/AnamariaGM/ce-team-project?tab=readme-ov-file#usage) for information on how to deploy using ArgoCD.
 
-## Customisation
+## Troubleshooting
+
+## Collaborators 
