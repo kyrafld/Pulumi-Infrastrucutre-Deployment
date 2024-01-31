@@ -113,7 +113,3 @@ In the build-image-and-push job the repo and public registry alias need to be ch
 Utilizing ArgoCD, automate synchronization with your project repository based on commits. Set up your application in the ArgoCD dashboard, specifying deployment file paths, target cluster, and namespace for automatic syncing and deployment.
 <br>
 <br> See the [**Usage**](https://github.com/AnamariaGM/ce-team-project?tab=readme-ov-file#usage) for information on how to deploy using ArgoCD.
-
-## Troubleshooting
-
-## Collaborators 
